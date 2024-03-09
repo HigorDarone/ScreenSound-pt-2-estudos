@@ -1,7 +1,8 @@
 ﻿
+using OpenAI_API;
 using ScreenSound.Modelos;
-
 namespace ScreenSound.Menus;
+
 
 internal class MenuRegistrarBanda : Menu
 {
@@ -13,9 +14,20 @@ internal class MenuRegistrarBanda : Menu
         string nomeDaBanda = Console.ReadLine()!;
         Banda banda = new Banda(nomeDaBanda);
         bandasRegistradas.Add(nomeDaBanda, banda);
+
+        var client = new OpenAIAPI("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");
+
+        var chat = client.Chat.CreateConversation();
+
+        chat.AppendSystemMessage($"Resuma a Banda {nomeDaBanda} em 1 paragrafo. Adote um estilo informal");
+
+        string resposta =  chat.GetResponseFromChatbotAsync().GetAwaiter().GetResult();
+        banda.Resumo = resposta;
+
+
         Console.WriteLine($"A banda {nomeDaBanda} foi registrada com sucesso!");
-        Thread.Sleep(4000);
+        Console.WriteLine("Digite uma tecla para voltar ao menu principal");
+        Console.ReadKey();
         Console.Clear();
-       
     }
 }
